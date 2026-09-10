@@ -1,0 +1,696 @@
+:root {
+  color-scheme: dark;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #edf5ff;
+  background: #050919;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  background: radial-gradient(ellipse at 50% 20%, #223360, #050919 75%);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 3px solid #ffe69b;
+  outline-offset: 3px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#screen {
+  width: min(100vw, calc((100dvh - 26px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+  background: #080e20;
+  box-shadow:
+    0 20px 90px #000b,
+    0 0 0 1px #87b2ff30;
+}
+
+#game {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+#hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.player-panel {
+  position: absolute;
+  top: 3%;
+  left: 2%;
+  width: 29%;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 10px;
+  border-left: 3px solid #8ae8ff;
+  border-radius: 4px 10px 10px 4px;
+  background: linear-gradient(100deg, #071124ef, #07112499);
+}
+
+#portrait {
+  width: 43px;
+  height: 49px;
+  flex: 0 0 auto;
+  border-radius: 20px 20px 13px 13px;
+  border: 2px solid #f3f7ff;
+  display: grid;
+  place-items: center;
+  background: #e84658;
+  font-size: 25px;
+  box-shadow: inset 0 -11px #0004;
+}
+
+.player-info {
+  flex: 1;
+  min-width: 0;
+}
+
+#playerName {
+  display: block;
+  font-size: clamp(8px, 1.25vw, 16px);
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.meter-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.meter-row span {
+  width: 43px;
+  font-size: clamp(7px, 0.8vw, 10px);
+  font-weight: 800;
+}
+
+.meter {
+  flex: 1;
+  height: 10px;
+  background: #ffffff1a;
+  overflow: hidden;
+  transform: skewX(-12deg);
+}
+
+.meter i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #2ac88d, #afffcb);
+}
+
+.meter.power i {
+  background: linear-gradient(90deg, #4284ff, #99f2ff);
+}
+
+#livesLabel {
+  display: block;
+  color: #ffe19a;
+  font-size: clamp(8px, 0.95vw, 12px);
+}
+
+.score-panel {
+  position: absolute;
+  right: 2%;
+  top: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 43px;
+  text-shadow: 0 2px 5px #000;
+}
+
+#scoreLabel {
+  color: #ffe18e;
+  font-size: clamp(10px, 1.6vw, 22px);
+  letter-spacing: 1px;
+}
+
+#stageLabel {
+  margin-top: 5px;
+  font-size: clamp(8px, 1vw, 13px);
+}
+
+#pauseButton {
+  pointer-events: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #b1d9ff66;
+  border-radius: 8px;
+  background: #0b1a33cc;
+}
+
+#bossBars {
+  position: absolute;
+  top: 3%;
+  left: 33%;
+  right: 28%;
+}
+
+.bossbar {
+  padding: 6px 9px 8px;
+  margin-bottom: 7px;
+  border: 1px solid #ffb67955;
+  border-radius: 5px;
+  background: #100d20dd;
+}
+
+.bossbar strong {
+  display: block;
+  color: #ffe0a8;
+  font-size: clamp(8px, 1vw, 13px);
+  margin-bottom: 5px;
+}
+
+.bossbar div {
+  height: 8px;
+  background: #4a2439;
+}
+
+.bossbar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ff4169, #ffb568);
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  overflow: auto;
+  background: linear-gradient(110deg, #050d21cc, #07112c88);
+  backdrop-filter: blur(3px);
+  touch-action: pan-y;
+}
+
+#panel {
+  width: min(790px, 98%);
+  max-height: 100%;
+  padding: 12px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #8be8ff;
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-size: clamp(9px, 1.15vw, 14px);
+}
+
+.title {
+  font-size: clamp(28px, 5.8vw, 72px);
+  line-height: 0.98;
+  margin: 13px 0;
+  letter-spacing: -2px;
+  font-weight: 950;
+  text-shadow:
+    0 4px #274b84,
+    0 0 35px #649fff55;
+}
+
+.title em {
+  color: #ffdd78;
+  font-style: normal;
+}
+
+.subtitle {
+  letter-spacing: 9px;
+  margin: 12px 0 20px;
+  color: #c1d1ec;
+}
+
+h2 {
+  margin: 8px 0 18px;
+  font-size: clamp(22px, 3.3vw, 42px);
+}
+
+.menu {
+  display: grid;
+  gap: 8px;
+  width: min(370px, 100%);
+  margin: 14px auto;
+}
+
+.menu button,
+.confirm,
+.back {
+  padding: 12px 17px;
+  border: 1px solid #94b9f05c;
+  border-radius: 7px;
+  background: linear-gradient(110deg, #1b3154ee, #0c1932ee);
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.menu button.selected,
+.menu button:hover,
+.back:hover {
+  border-color: #8ceaff;
+  background: #295284;
+  box-shadow: 0 0 20px #4aaeff25;
+}
+
+.menu button.primary,
+.confirm {
+  color: #0c1830;
+  border-color: #ffebad;
+  background: linear-gradient(100deg, #ffe390, #efa34e);
+}
+
+.menu button.primary.selected,
+.confirm:hover {
+  background: #fff0b5;
+  box-shadow: 0 0 25px #ffde7850;
+}
+
+.note {
+  font-size: 12px;
+  color: #94a8c8;
+  line-height: 1.6;
+}
+
+.rangers {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+  margin: 16px 0;
+}
+
+.card {
+  padding: 7px 3px;
+  border: 1px solid #ffffff29;
+  border-radius: 10px;
+  background: #10203ae8;
+}
+
+.card.selected {
+  border: 2px solid var(--color);
+  transform: translateY(-5px);
+  box-shadow: 0 0 22px #81baff30;
+  background: #223957;
+}
+
+.card canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.card span {
+  display: block;
+  font-weight: 800;
+  font-size: clamp(8px, 1vw, 12px);
+}
+
+.details {
+  padding: 12px 7px;
+  border-top: 1px solid #c7dcff33;
+  line-height: 1.85;
+  font-size: 14px;
+}
+
+.details strong {
+  color: #ffe298;
+}
+
+.stats {
+  display: flex;
+  gap: 10px 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.selection-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.instructions {
+  text-align: left;
+  padding: 15px 22px;
+  background: #09162de8;
+  border: 1px solid #b9d5ff33;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.instructions p {
+  margin: 8px 0;
+}
+.instructions b {
+  color: #ffe091;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px 20px;
+  padding: 18px;
+  margin: 15px auto;
+  width: min(510px, 100%);
+  border: 1px solid #a8caff33;
+  border-radius: 10px;
+  background: #0b1932d9;
+  text-align: left;
+}
+
+.results span:nth-child(even) {
+  color: #ffe091;
+  text-align: right;
+  font-weight: 800;
+}
+
+#toast {
+  position: absolute;
+  left: 50%;
+  bottom: 5%;
+  transform: translateX(-50%);
+  max-width: 92%;
+  padding: 9px 17px;
+  border: 1px solid #ffd78566;
+  border-radius: 22px;
+  background: #091427e8;
+  color: #ffe399;
+  text-align: center;
+  font-size: clamp(10px, 1.3vw, 16px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+#toast.visible {
+  opacity: 1;
+}
+
+footer {
+  height: 26px;
+  line-height: 26px;
+  color: #7389ad;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+#touchControls {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  height: 155px;
+  z-index: 10;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.dpad {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 156px;
+  height: 150px;
+}
+
+#touchControls button {
+  position: absolute;
+  width: 49px;
+  height: 49px;
+  pointer-events: auto;
+  touch-action: none;
+  border: 1px solid #cce6ff88;
+  border-radius: 14px;
+  background: #294c767a;
+  color: #f4f8ff;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+#touchControls button.pressed {
+  background: #8bddffdf !important;
+  color: #10223d;
+  transform: scale(0.94);
+}
+
+.up {
+  left: 52px;
+  top: 0;
+}
+.left {
+  left: 0;
+  top: 50px;
+}
+.down {
+  left: 52px;
+  top: 100px;
+}
+.right {
+  left: 104px;
+  top: 50px;
+}
+
+.actions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 187px;
+  height: 150px;
+}
+
+.actions .jump {
+  left: 65px;
+  top: 0;
+}
+.actions .special {
+  right: 0;
+  top: 30px;
+  color: #ffe399;
+}
+.actions .attack {
+  left: 65px;
+  top: 78px;
+  background: #a6375299 !important;
+}
+.actions .heavy {
+  right: 0;
+  top: 95px;
+  background: #6248a499 !important;
+}
+.actions .dash {
+  left: 0;
+  top: 74px;
+  width: 43px !important;
+  height: 43px !important;
+}
+
+@media (max-width: 850px) {
+  #overlay {
+    padding: 6px;
+  }
+  #panel {
+    padding: 6px;
+  }
+  .menu {
+    gap: 5px;
+    margin: 9px auto;
+    max-width: 300px;
+  }
+  .menu button,
+  .confirm,
+  .back {
+    font-size: 12px;
+    padding: 8px 13px;
+  }
+  .subtitle {
+    margin: 7px 0 11px;
+  }
+  .rangers {
+    gap: 4px;
+    margin: 8px 0;
+  }
+  .card {
+    padding: 3px 2px;
+  }
+  .details {
+    font-size: 11px;
+    padding: 5px;
+  }
+  .stats {
+    font-size: 10px;
+    gap: 5px 10px;
+  }
+  h2 {
+    margin: 5px 0 9px;
+  }
+  .player-panel {
+    padding: 5px;
+    gap: 5px;
+  }
+  #portrait {
+    width: 25px;
+    height: 30px;
+    font-size: 16px;
+  }
+  .meter {
+    height: 6px;
+  }
+  .meter-row span {
+    width: 26px;
+  }
+  .bossbar {
+    padding: 4px 5px;
+  }
+  .bossbar div {
+    height: 5px;
+  }
+  .score-panel {
+    padding-right: 30px;
+  }
+  #pauseButton {
+    width: 25px;
+    height: 25px;
+  }
+  .instructions {
+    font-size: 11px;
+    padding: 8px 13px;
+  }
+  .instructions p {
+    margin: 5px 0;
+  }
+  .results {
+    font-size: 12px;
+    padding: 10px;
+    margin: 10px auto;
+  }
+}
+
+@media (pointer: coarse) {
+  footer {
+    display: none;
+  }
+  #screen {
+    width: min(100vw, calc(100dvh * 16 / 9));
+  }
+}
+
+@media (pointer: coarse) and (orientation: portrait) {
+  #app {
+    justify-content: flex-start;
+  }
+  #screen {
+    width: 100vw;
+    margin-top: max(4vh, env(safe-area-inset-top));
+    overflow: visible;
+  }
+  #overlay {
+    min-height: 77dvh;
+    align-items: start;
+    background: #071024f7;
+    z-index: 20;
+  }
+  #panel {
+    max-height: 75dvh;
+    overflow-y: auto;
+  }
+  .title {
+    font-size: 41px;
+    margin-top: 28px;
+  }
+  .rangers {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .card canvas {
+    max-height: 116px;
+  }
+  .menu button {
+    padding: 13px;
+    font-size: 14px;
+  }
+  .details {
+    font-size: 13px;
+  }
+  .stats {
+    font-size: 11px;
+  }
+  .instructions {
+    font-size: 13px;
+  }
+  #touchControls {
+    bottom: max(32px, env(safe-area-inset-bottom));
+  }
+  #toast {
+    bottom: -45px;
+  }
+}
+
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  #touchControls {
+    transform: scale(0.82);
+    transform-origin: bottom center;
+    left: 0;
+    right: 0;
+  }
+  .title {
+    font-size: 37px;
+  }
+  .menu button {
+    padding: 6px 12px;
+  }
+  .note {
+    font-size: 9px;
+  }
+  .card canvas {
+    max-height: 98px;
+  }
+  .subtitle {
+    font-size: 11px;
+  }
+}
