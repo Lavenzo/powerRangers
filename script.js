@@ -5,7 +5,9 @@
    ============================================================ */
 
 let canvas = document.querySelector("#game");
-canvas.addEventListener("touchstart", (e) => e.preventDefault(), { passive: false });
+canvas.addEventListener("touchstart", (e) => e.preventDefault(), {
+  passive: false,
+});
 let ctx = canvas.getContext("2d");
 let W = 1280;
 let H = 720;
@@ -15,6 +17,9 @@ let clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 let lerp = (a, b, t) => a + (b - a) * t;
 let random = (min, max) => min + Math.random() * (max - min);
 let pick = (list) => list[Math.floor(Math.random() * list.length)];
+
+const gameBackground = new Image();
+gameBackground.src = "images/GameBackground.png";
 
 let save = {
   get(key, fallback) {
@@ -618,13 +623,12 @@ class InputManager {
     this.pointers = new Map();
 
     this.keys = {
-      
       ArrowUp: "up",
-      
+
       ArrowDown: "down",
-      
+
       ArrowLeft: "left",
-      
+
       ArrowRight: "right",
       KeyA: "attack",
       KeyS: "heavy",
@@ -703,11 +707,9 @@ class InputManager {
       button.addEventListener("pointercancel", release);
       button.addEventListener("lostpointercapture", release);
       button.addEventListener("contextmenu", (event) => event.preventDefault());
-      button.addEventListener(
-        "touchstart",
-        (event) => event.preventDefault(),
-        { passive: false },
-      );
+      button.addEventListener("touchstart", (event) => event.preventDefault(), {
+        passive: false,
+      });
     });
   }
 
@@ -4461,52 +4463,16 @@ class Game {
   }
 
   titleBackground() {
-    let gradient = ctx.createRadialGradient(640, 340, 20, 640, 340, 790);
-    gradient.addColorStop(0, "#2b477f");
-    gradient.addColorStop(0.6, "#14254b");
-    gradient.addColorStop(1, "#060d20");
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, W, H);
-
-    for (let i = 0; i < 100; i++) {
-      let angle = i * 2.399;
-      let radius = (i * 51 + this.clock * 23) % 820;
-      oval(
-        ctx,
-        640 + Math.cos(angle) * radius,
-        340 + Math.sin(angle) * radius * 0.65,
-        1 + radius / 400,
-        1 + radius / 500,
-        "#cae4ff99",
-      );
+    // Draw new static title-screen background
+    if (gameBackground.complete && gameBackground.naturalWidth > 0) {
+      ctx.drawImage(gameBackground, 0, 0, W, H);
+    } else {
+      // Fallback while image loads
+      ctx.fillStyle = "#060d20";
+      ctx.fillRect(0, 0, W, H);
     }
 
-    ctx.save();
-    ctx.translate(640, 349);
-    ctx.rotate(this.clock * 0.035);
-
-    for (let i = 0; i < 12; i++) {
-      ctx.rotate(TAU / 12);
-      poly(
-        ctx,
-        [
-          [55, 0],
-          [740, -19],
-          [740, 19],
-        ],
-        "#98baff0c",
-      );
-    }
-
-    ctx.strokeStyle = "#8aafff24";
-    ctx.lineWidth = 3;
-    for (let r = 190; r < 520; r += 95) {
-      ctx.beginPath();
-      ctx.arc(0, 0, r, 0, TAU);
-      ctx.stroke();
-    }
-    ctx.restore();
-
+    // Keep the six Rangers as a Canvas overlay
     RANGERS.forEach((r, i) => {
       drawFighter(
         ctx,
@@ -4524,6 +4490,7 @@ class Game {
       );
     });
 
+    // Optional existing lightning effect
     if (Math.sin(this.clock * 1.7) > 0.975) {
       bolt(ctx, 130, 0, 350, 600, "#7c9cff66", 3);
       bolt(ctx, 1180, 0, 970, 590, "#d6b2ff66", 3);
@@ -4838,7 +4805,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   let orientationPaused = false;
-  const portraitQuery = window.matchMedia("(pointer: coarse) and (orientation: portrait)");
+  const portraitQuery = window.matchMedia(
+    "(pointer: coarse) and (orientation: portrait)",
+  );
 
   portraitQuery.addEventListener("change", (e) => {
     if (e.matches) {
