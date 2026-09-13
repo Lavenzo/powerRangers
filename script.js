@@ -5,6 +5,7 @@
    ============================================================ */
 
 let canvas = document.querySelector("#game");
+canvas.addEventListener("touchstart", (e) => e.preventDefault(), { passive: false });
 let ctx = canvas.getContext("2d");
 let W = 1280;
 let H = 720;
@@ -702,6 +703,11 @@ class InputManager {
       button.addEventListener("pointercancel", release);
       button.addEventListener("lostpointercapture", release);
       button.addEventListener("contextmenu", (event) => event.preventDefault());
+      button.addEventListener(
+        "touchstart",
+        (event) => event.preventDefault(),
+        { passive: false },
+      );
     });
   }
 
