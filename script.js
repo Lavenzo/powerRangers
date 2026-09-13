@@ -144,7 +144,7 @@ let WORDS = {
   growing: ["MONSTER GROWING!", "怪兽巨大化！"],
   summon: ["ZORD POWER!", "召唤机甲！"],
   zord: ["ZORD BATTLE", "机甲战斗"],
-  finish: ["FINISHER READY — I / S", "终结技就绪 — I / S"],
+  finish: ["FINISHER READY — D", "终结技就绪 — D"],
   mission: ["MISSION COMPLETE", "任务完成"],
   hit: ["HIT", "连击"],
   block: ["BLOCK", "格挡"],
@@ -165,12 +165,12 @@ let WORDS = {
   arcade: ["A CANVAS ARCADE ADVENTURE", "街机格斗冒险"],
   grid: ["MORPHIN GRID", "变身能量网络"],
   menuHint: [
-    "↑ / ↓: navigate · Enter / J: select",
-    "↑ / ↓：切换 · 回车 / J：确认",
+    "↑ / ↓: navigate · Enter / A: select",
+    "↑ / ↓：切换 · 回车 / A：确认",
   ],
   selectHint: [
-    "Arrows / WASD: choose · Enter: deploy · Or tap a Ranger",
-    "方向键 / WASD：选择 · 回车：出击 · 也可点击战士",
+    "Arrows: choose · Enter: deploy · Or tap a Ranger",
+    "方向键：选择 · 回车：出击 · 也可点击战士",
   ],
   musicMissing: [
     "Check your music file: audio/GameMusic05.mp3",
@@ -617,19 +617,19 @@ class InputManager {
     this.pointers = new Map();
 
     this.keys = {
-      KeyW: "up",
+      
       ArrowUp: "up",
-      KeyS: "down",
+      
       ArrowDown: "down",
-      KeyA: "left",
+      
       ArrowLeft: "left",
-      KeyD: "right",
+      
       ArrowRight: "right",
-      KeyJ: "attack",
-      KeyK: "heavy",
-      KeyL: "jump",
-      KeyI: "special",
-      Space: "dash",
+      KeyA: "attack",
+      KeyS: "heavy",
+      Space: "jump",
+      KeyD: "special",
+      KeyW: "dash",
     };
 
     window.addEventListener(
@@ -3277,16 +3277,16 @@ class Game {
         ? 3
         : 6;
 
-      if (["ArrowLeft", "KeyA"].includes(code)) delta = -1;
-      if (["ArrowRight", "KeyD"].includes(code)) delta = 1;
-      if (["ArrowUp", "KeyW"].includes(code)) delta = columns === 3 ? -3 : -1;
-      if (["ArrowDown", "KeyS"].includes(code)) delta = columns === 3 ? 3 : 1;
+      if (["ArrowLeft"].includes(code)) delta = -1;
+      if (["ArrowRight"].includes(code)) delta = 1;
+      if (["ArrowUp"].includes(code)) delta = columns === 3 ? -3 : -1;
+      if (["ArrowDown"].includes(code)) delta = columns === 3 ? 3 : 1;
 
       if (delta) {
         this.selected = (this.selected + delta + 6) % 6;
         this.audio.play("menu");
         this.renderSelection();
-      } else if (code === "Enter" || code === "KeyJ") {
+      } else if (code === "Enter" || code === "KeyA") {
         this.startRun();
       }
       return;
@@ -3295,15 +3295,15 @@ class Game {
     let count = this.menuActions.length;
     if (!count) return;
 
-    if (["ArrowUp", "KeyW"].includes(code)) {
+    if (["ArrowUp"].includes(code)) {
       this.menuIndex = (this.menuIndex - 1 + count) % count;
       this.audio.play("menu");
       this.highlightMenu();
-    } else if (["ArrowDown", "KeyS"].includes(code)) {
+    } else if (["ArrowDown"].includes(code)) {
       this.menuIndex = (this.menuIndex + 1) % count;
       this.audio.play("menu");
       this.highlightMenu();
-    } else if (["Enter", "KeyJ", "Space"].includes(code)) {
+    } else if (["Enter", "KeyA", "Space"].includes(code)) {
       this.activateMenu();
     }
   }
@@ -3445,40 +3445,40 @@ class Game {
     this.menuIndex = 0;
 
     let english = `
-      <p><b>MOVE:</b> WASD / arrows. Move vertically and diagonally to line up attacks.</p>
-      <p><b>FIGHT:</b> J attack · K heavy · L jump · I special · SPACE dodge.
+      <p><b>MOVE:</b> Arrows. Move vertically and diagonally to line up attacks.</p>
+      <p><b>FIGHT:</b> A attack · S heavy · SPACE jump · D special · W dodge.
       Double-tap a direction to dash. P / ESC pauses.</p>
-      <p><b>COMBOS:</b> J → J → J → J finishes a combo. J → J → K gives a heavy finish.
-      Press the next attack during a swing to queue it. Jump, then J for an aerial attack.</p>
-      <p><b>TACTICS:</b> Direction + K lunges. Heavy attacks break shields.
+      <p><b>COMBOS:</b> A → A → A → A finishes a combo. A → A → S gives a heavy finish.
+      Press the next attack during a swing to queue it. Jump, then A for an aerial attack.</p>
+      <p><b>TACTICS:</b> Direction + S lunges. Heavy attacks break shields.
       Z-Putties take extra damage from heavy attacks or just after attacking.
       Avoid red warnings; jump over ground shockwaves.</p>
       <p><b>POWER:</b> Hits, defeats and damage build power. Specials cost 60.
       Green orbs restore HP, blue crystals restore power, gold orbs give a life.</p>
       <p><b>ZORDS:</b> Stages 2, 4 and 6 have giant battles.
-      J attacks, K strikes heavily, SPACE guards from the front, I fires an ultimate.
-      At 15% boss HP, press I for the cinematic finisher.</p>
+      A attacks, S strikes heavily, W guards from the front, D fires an ultimate.
+      At 15% boss HP, press D for the cinematic finisher.</p>
       <p><b>MOBILE:</b> Hold two direction buttons for diagonals.
-      A attack · B heavy · J jump · S special / finisher · » dodge / guard.
+      A attack · S heavy · SP jump · D special / finisher · » dodge / guard.
       Tap Ⅱ to pause. Landscape provides more room.</p>
       <p><b>PROGRESS:</b> Clear each encounter, then follow GO to the right.
       Start with 3 lives. Continue restarts the current stage with 3 lives.</p>`;
 
     let chinese = `
-      <p><b>移动：</b>WASD / 方向键，可上下左右及斜向移动，先对齐敌人再攻击。</p>
-      <p><b>战斗：</b>J 普通攻击 · K 重击 · L 跳跃 · I 必杀技 · 空格闪避。
+      <p><b>移动：</b>方向键，可上下左右及斜向移动，先对齐敌人再攻击。</p>
+      <p><b>战斗：</b>A 普通攻击 · S 重击 · 空格跳跃 · D 必杀技 · W 闪避。
       双击方向冲刺，P / ESC 暂停。</p>
-      <p><b>连招：</b>J → J → J → J 终结连招，J → J → K 重击终结。
-      挥击时按下次攻击可排队连招，跳跃后按 J 发动空中攻击。</p>
-      <p><b>技巧：</b>方向 + K 突进重击，重击可破盾。
+      <p><b>连招：</b>A → A → A → A 终结连招，A → A → S 重击终结。
+      挥击时按下次攻击可排队连招，跳跃后按 A 发动空中攻击。</p>
+      <p><b>技巧：</b>方向 + S 突进重击，重击可破盾。
       Z型泥人在攻击后或受到重击时暴露弱点。避开红色预警，跳跃躲地面冲击波。</p>
       <p><b>能量：</b>命中、击败敌人和受伤可增加能量，必杀消耗60点。
       绿色球恢复生命，蓝色水晶补充能量，金色球增加一条生命。</p>
       <p><b>机甲：</b>第2、4、6关有巨大化战斗。
-      J 攻击，K 重击，空格防御正面攻击，I 大招。
-      首领生命降至15%时，按 I 使用剧情终结技。</p>
+      A 攻击，S 重击，W 防御正面攻击，D 大招。
+      首领生命降至15%时，按 D 使用剧情终结技。</p>
       <p><b>手机：</b>同时按住两个方向可斜向移动。
-      A 攻击 · B 重击 · J 跳跃 · S 必杀 / 终结 · » 闪避 / 防御。
+      A 攻击 · S 重击 · SP 跳跃 · D 必杀 / 终结 · » 闪避 / 防御。
       点击 Ⅱ 暂停，横屏体验更佳。</p>
       <p><b>流程：</b>清除当前敌人后跟随“前进”向右移动。
       初始3条生命，“继续”会以3条生命重开当前关卡。</p>`;
@@ -4826,19 +4826,33 @@ let game = new Game();
 // Orientation warning logic
 document.addEventListener("DOMContentLoaded", () => {
   const warning = document.getElementById("orientation-warning");
-  const dismissBtn = document.getElementById("dismissOrientation");
 
-  if (warning && dismissBtn) {
-    if (sessionStorage.getItem("orientationWarningDismissed") === "true") {
-      warning.style.display = "none";
+  if (warning) {
+    warning.removeAttribute("hidden");
+  }
+
+  let orientationPaused = false;
+  const portraitQuery = window.matchMedia("(pointer: coarse) and (orientation: portrait)");
+
+  portraitQuery.addEventListener("change", (e) => {
+    if (e.matches) {
+      if (game.active() && game.state !== "paused") {
+        game.pause();
+        orientationPaused = true;
+      }
     } else {
-      // Remove the "hidden" attribute so CSS can control visibility based on orientation
-      warning.removeAttribute("hidden");
+      if (orientationPaused) {
+        if (game.state === "paused") {
+          game.setState(game.previousState);
+        }
+        orientationPaused = false;
+      }
     }
+  });
 
-    dismissBtn.addEventListener("click", () => {
-      warning.style.display = "none";
-      sessionStorage.setItem("orientationWarningDismissed", "true");
-    });
+  // Handle initial orientation
+  if (portraitQuery.matches && game.active() && game.state !== "paused") {
+    game.pause();
+    orientationPaused = true;
   }
 });
