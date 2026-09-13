@@ -621,7 +621,53 @@ footer {
   }
 }
 
+#orientation-warning {
+  display: none;
+}
+
 @media (pointer: coarse) and (orientation: portrait) {
+  #orientation-warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(9, 20, 39, 0.95);
+    border: 1px solid rgba(255, 215, 133, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    z-index: 1000;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  #orientation-warning p {
+    color: #ffe399;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  #orientation-warning button {
+    background: linear-gradient(110deg, #1b3154ee, #0c1932ee);
+    color: #c1d1ec;
+    border: 1px solid #94b9f05c;
+    border-radius: 7px;
+    padding: 10px 15px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  #orientation-warning button:hover {
+    background: #295284;
+    border-color: #8ceaff;
+  }
+
   #app {
     justify-content: flex-start;
   }
@@ -716,5 +762,27 @@ footer {
   .actions {
     right: 0;
     bottom: 0;
+    width: 120px;
+    height: 180px;
+  }
+  .actions .jump {
+    left: 0;
+    top: 60px;
+  }
+  .actions .special {
+    left: 60px;
+    top: 60px;
+  }
+  .actions .attack {
+    left: 0;
+    top: 120px;
+  }
+  .actions .heavy {
+    left: 60px;
+    top: 120px;
+  }
+  .actions .dash {
+    left: 30px;
+    top: 0;
   }
 }

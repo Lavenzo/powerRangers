@@ -4822,3 +4822,23 @@ class Game {
 
 /* Exactly one game instance and one requestAnimationFrame loop. */
 let game = new Game();
+
+// Orientation warning logic
+document.addEventListener("DOMContentLoaded", () => {
+  const warning = document.getElementById("orientation-warning");
+  const dismissBtn = document.getElementById("dismissOrientation");
+
+  if (warning && dismissBtn) {
+    if (sessionStorage.getItem("orientationWarningDismissed") === "true") {
+      warning.style.display = "none";
+    } else {
+      // Remove the "hidden" attribute so CSS can control visibility based on orientation
+      warning.removeAttribute("hidden");
+    }
+
+    dismissBtn.addEventListener("click", () => {
+      warning.style.display = "none";
+      sessionStorage.setItem("orientationWarningDismissed", "true");
+    });
+  }
+});
