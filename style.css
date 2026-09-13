@@ -672,12 +672,6 @@ footer {
 }
 
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
-  #touchControls {
-    transform: scale(0.82);
-    transform-origin: bottom center;
-    left: 0;
-    right: 0;
-  }
   .title {
     font-size: 37px;
   }
@@ -692,5 +686,35 @@ footer {
   }
   .subtitle {
     font-size: 11px;
+  }
+}
+
+@media (pointer: coarse) and (orientation: landscape) {
+  #app {
+    justify-content: center;
+    align-items: center;
+  }
+  #screen {
+    width: min(100vw, calc(100dvh * 16 / 9));
+    height: min(100dvh, calc(100vw * 9 / 16));
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    border: none;
+    box-shadow: none;
+  }
+  #touchControls {
+    bottom: max(16px, env(safe-area-inset-bottom));
+    left: max(16px, env(safe-area-inset-left));
+    right: max(16px, env(safe-area-inset-right));
+    height: 155px;
+    top: auto;
+  }
+  .dpad {
+    left: 0;
+    bottom: 0;
+  }
+  .actions {
+    right: 0;
+    bottom: 0;
   }
 }
