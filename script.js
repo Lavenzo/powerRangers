@@ -192,6 +192,9 @@ let RANGERS = [
     weapon: ["POWER SWORD", "神力剑"],
     special: ["ENERGY SWORD SLASH", "能量剑斩"],
     type: "sword",
+    //Modified for Testing
+    //atk: 1000,
+    //Original
     atk: 4,
     speed: 4,
     def: 4,
