@@ -22,6 +22,8 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
   background: radial-gradient(ellipse at 50% 20%, #223360, #050919 75%);
 }
 

@@ -3408,9 +3408,9 @@ class Game {
       <div class="details">
         <strong>${this.name(r.weapon)}</strong>
         <div class="stats">
-          <span>${this.t("attack")} ${"★".repeat(r.atk)}${"☆".repeat(5 - r.atk)}</span>
-          <span>${this.t("speed")} ${"★".repeat(r.speed)}${"☆".repeat(5 - r.speed)}</span>
-          <span>${this.t("defence")} ${"★".repeat(r.def)}${"☆".repeat(5 - r.def)}</span>
+          <span>${this.t("attack")} ${"★".repeat(Math.max(0, Math.min(5, r.atk)))}${"☆".repeat(Math.max(0, 5 - Math.max(0, Math.min(5, r.atk))))}</span>
+          <span>${this.t("speed")} ${"★".repeat(Math.max(0, Math.min(5, r.speed)))}${"☆".repeat(Math.max(0, 5 - Math.max(0, Math.min(5, r.speed))))}</span>
+          <span>${this.t("defence")} ${"★".repeat(Math.max(0, Math.min(5, r.def)))}${"☆".repeat(Math.max(0, 5 - Math.max(0, Math.min(5, r.def))))}</span>
         </div>
         <div>${this.t("special")}: ${this.name(r.special)}</div>
       </div>
