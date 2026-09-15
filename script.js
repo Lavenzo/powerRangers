@@ -21,6 +21,9 @@ let pick = (list) => list[Math.floor(Math.random() * list.length)];
 const gameBackground = new Image();
 gameBackground.src = "images/GameBackground.png";
 
+const stage1Background = new Image();
+stage1Background.src = "images/Stage1Background.png";
+
 let save = {
   get(key, fallback) {
     try {
@@ -4075,6 +4078,14 @@ class Game {
   }
 
   background(forceTheme = null, giant = this.giant) {
+    if (this.stageIndex === 0 && forceTheme === null && !giant) {
+      let maxCamera = 4 * 930;
+      let ratio = Math.max(0, Math.min(1, this.camera / maxCamera));
+      let drawX = ratio * (stage1Background.naturalWidth - W);
+      ctx.drawImage(stage1Background, Math.floor(drawX), 0, W, H, 0, 0, W, H);
+      return;
+    }
+
     let theme = forceTheme || STAGES[this.stageIndex].theme;
     if (theme === "ruins" && this.camera < 1050 && !giant) theme = "city";
     this.sky(theme);
