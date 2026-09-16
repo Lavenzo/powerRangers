@@ -1,5 +1,20 @@
 "use strict";
 
+const RED_RANGER_FRAMES = {
+  idle: [0, 1, 2, 3],
+  run: [6, 7, 8, 9, 10, 11],
+  attackA: [12, 13, 14, 15],
+  attackS: [18, 19, 20, 21, 22],
+  specialD: 31,
+  jump: 25,
+  hurt: 26,
+  knockback: 27
+};
+
+const redRangerImg = new Image();
+redRangerImg.src = "images/redRanger.png";
+
+
 /* ============================================================
    CORE UTILITIES
    ============================================================ */
@@ -922,6 +937,73 @@ function drawWeapon(c, type, angle, giant = false) {
 }
 
 function drawFighter(c, actor, time) {
+  if (actor.ranger === 0) {
+    let size = actor.scale || 1;
+
+    // Draw shadow
+    oval(c, actor.x, actor.y + 3, 33 * size, 10 * size, "#02071455");
+
+    c.save();
+    c.translate(actor.x, actor.y - (actor.z || 0));
+    c.scale(size * (actor.dir || 1), size);
+
+    if (actor.inv > 0 && Math.floor(time * 17) % 2 === 0) {
+      c.globalAlpha *= 0.48;
+    }
+
+    let frame = 0;
+
+    if (actor.dead) {
+      frame = RED_RANGER_FRAMES.knockback;
+      let progress = clamp(1 - actor.deathTimer / actor.deathDuration, 0, 1);
+      c.globalAlpha *= 1 - progress;
+    } else if (actor.stun > 0) {
+      if (actor.state === "knockedDown") {
+         frame = RED_RANGER_FRAMES.knockback;
+      } else {
+         frame = RED_RANGER_FRAMES.hurt;
+      }
+    } else if (actor.state === "special") {
+      frame = RED_RANGER_FRAMES.specialD;
+    } else if (actor.attack) {
+      let attack = actor.attack;
+      let fraction = clamp(attack.elapsed / attack.duration, 0, 1);
+      if (attack.heavy) {
+        let sFrames = RED_RANGER_FRAMES.attackS;
+        let idx = Math.floor(fraction * sFrames.length);
+        if (idx >= sFrames.length) idx = sFrames.length - 1;
+        frame = sFrames[idx];
+      } else {
+        let pFrames = RED_RANGER_FRAMES.attackA;
+        let idx = Math.floor(fraction * pFrames.length);
+        if (idx >= pFrames.length) idx = pFrames.length - 1;
+        frame = pFrames[idx];
+      }
+    } else if (actor.z > 0) {
+      frame = RED_RANGER_FRAMES.jump;
+    } else if (actor.moving) {
+      let runFrames = RED_RANGER_FRAMES.run;
+      let t = Math.floor(time * 10) % runFrames.length;
+      frame = runFrames[t];
+    } else {
+      let idleFrames = RED_RANGER_FRAMES.idle;
+      let t = Math.floor(time * 4) % idleFrames.length;
+      frame = idleFrames[t];
+    }
+
+    let cellW = 469;
+    let cellH = 256;
+    let sx = (frame % 6) * cellW;
+    let sy = Math.floor(frame / 6) * cellH;
+
+    // Explicit bottom-center anchor based on the provided 469x256 grid
+    // For large energy blasts/sword attacks, the visual center is maintained within the 469 width
+    c.drawImage(redRangerImg, sx, sy, cellW, cellH, -cellW / 2, -230, cellW, cellH);
+
+    c.restore();
+    return;
+  }
+
   let ranger = Number.isInteger(actor.ranger);
   let config = ranger ? RANGERS[actor.ranger] : actor.config;
   let kind = actor.kind || "";
