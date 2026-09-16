@@ -43,6 +43,21 @@ stage2Boss3.src = "images/Stage2BossFightBackground3.png";
 const stage2Boss4 = new Image();
 stage2Boss4.src = "images/Stage2BossFightBackground4.png";
 
+const stage4Background = new Image();
+stage4Background.src = "images/Stage4Background.png";
+
+const stage4Boss1 = new Image();
+stage4Boss1.src = "images/Stage4BossFightBackground1.png";
+
+const stage4Boss2 = new Image();
+stage4Boss2.src = "images/Stage4BossFightBackground2.png";
+
+const stage4Boss3 = new Image();
+stage4Boss3.src = "images/Stage4BossFightBackground3.png";
+
+const stage4Boss4 = new Image();
+stage4Boss4.src = "images/Stage4BossFightBackground4.png";
+
 
 
 let save = {
@@ -3568,6 +3583,8 @@ class Game {
 
     this.clearWorld();
     this.stageIndex = index;
+    this.stage4BossPhase = 1;
+    this.stage4BossEncountered = false;
     this.giant = false;
     this.stageDeaths = 0;
     this.checkpoint = {
@@ -4124,6 +4141,14 @@ class Game {
       return;
     }
 
+    if (this.stageIndex === 3 && forceTheme === null && !giant) {
+      let maxCamera = 4 * 930;
+      let ratio = Math.max(0, Math.min(1, this.camera / maxCamera));
+      let drawX = ratio * (stage4Background.naturalWidth - W);
+      ctx.drawImage(stage4Background, Math.floor(drawX), 0, W, H, 0, 0, W, H);
+      return;
+    }
+
 
     let theme = forceTheme || STAGES[this.stageIndex].theme;
     if (theme === "ruins" && this.camera < 1050 && !giant) theme = "city";
@@ -4150,6 +4175,28 @@ class Game {
         ctx.drawImage(bossBg, 0, 0, W, H);
         return;
       }
+
+      if (this.stageIndex === 3) {
+        let boss = this.enemies.find((e) => e.boss);
+        if (boss) {
+          let ratio = boss.hp / boss.maxHp;
+          if (ratio <= 0.75 && ratio > 0.5 && this.stage4BossPhase < 2) {
+            this.stage4BossPhase = 2;
+          } else if (ratio <= 0.5 && ratio > 0.25 && this.stage4BossPhase < 3) {
+            this.stage4BossPhase = 3;
+          } else if (ratio <= 0.25 && this.stage4BossPhase < 4) {
+            this.stage4BossPhase = 4;
+          }
+        }
+        let bossBg = stage4Boss1;
+        if (this.stage4BossPhase === 2) bossBg = stage4Boss2;
+        if (this.stage4BossPhase === 3) bossBg = stage4Boss3;
+        if (this.stage4BossPhase === 4) bossBg = stage4Boss4;
+        
+        ctx.drawImage(bossBg, 0, 0, W, H);
+        return;
+      }
+
       this.giantCity(theme);
       return;
     }
@@ -4755,6 +4802,8 @@ class Game {
       ctx.globalAlpha = clamp((f - 0.3) / 0.7, 0, 1);
       if (this.stageIndex === 1) {
         ctx.drawImage(stage2Boss1, 0, 0, W, H);
+      } else if (this.stageIndex === 3) {
+        ctx.drawImage(stage4Boss1, 0, 0, W, H);
       } else {
         this.sky(STAGES[this.stageIndex].theme);
         this.giantCity(STAGES[this.stageIndex].theme);
