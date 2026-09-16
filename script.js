@@ -4142,33 +4142,10 @@ class Game {
     }
 
     if (this.stageIndex === 3 && forceTheme === null && !giant) {
-      let boss = this.enemies.find((e) => e.boss && !e.mini);
-      if (boss) this.stage4BossEncountered = true;
-
-      if (this.stage4BossEncountered) {
-        if (boss) {
-          let ratio = boss.hp / boss.maxHp;
-          if (ratio <= 0.75 && ratio > 0.5 && this.stage4BossPhase < 2) {
-            this.stage4BossPhase = 2;
-          } else if (ratio <= 0.5 && ratio > 0.25 && this.stage4BossPhase < 3) {
-            this.stage4BossPhase = 3;
-          } else if (ratio <= 0.25 && this.stage4BossPhase < 4) {
-            this.stage4BossPhase = 4;
-          }
-        }
-
-        let bossBg = stage4Boss1;
-        if (this.stage4BossPhase === 2) bossBg = stage4Boss2;
-        if (this.stage4BossPhase === 3) bossBg = stage4Boss3;
-        if (this.stage4BossPhase === 4) bossBg = stage4Boss4;
-
-        ctx.drawImage(bossBg, 0, 0, W, H);
-      } else {
-        let maxCamera = 4 * 930;
-        let ratio = Math.max(0, Math.min(1, this.camera / maxCamera));
-        let drawX = ratio * (stage4Background.naturalWidth - W);
-        ctx.drawImage(stage4Background, Math.floor(drawX), 0, W, H, 0, 0, W, H);
-      }
+      let maxCamera = 4 * 930;
+      let ratio = Math.max(0, Math.min(1, this.camera / maxCamera));
+      let drawX = ratio * (stage4Background.naturalWidth - W);
+      ctx.drawImage(stage4Background, Math.floor(drawX), 0, W, H, 0, 0, W, H);
       return;
     }
 
@@ -4195,6 +4172,27 @@ class Game {
         if (this.stage2BossPhase === 3) bossBg = stage2Boss3;
         if (this.stage2BossPhase === 4) bossBg = stage2Boss4;
         
+        ctx.drawImage(bossBg, 0, 0, W, H);
+        return;
+      }
+
+      if (this.stageIndex === 3) {
+        let boss = this.enemies.find((e) => e.boss);
+        if (boss) {
+          let ratio = boss.hp / boss.maxHp;
+          if (ratio <= 0.75 && ratio > 0.5 && this.stage4BossPhase < 2) {
+            this.stage4BossPhase = 2;
+          } else if (ratio <= 0.5 && ratio > 0.25 && this.stage4BossPhase < 3) {
+            this.stage4BossPhase = 3;
+          } else if (ratio <= 0.25 && this.stage4BossPhase < 4) {
+            this.stage4BossPhase = 4;
+          }
+        }
+        let bossBg = stage4Boss1;
+        if (this.stage4BossPhase === 2) bossBg = stage4Boss2;
+        if (this.stage4BossPhase === 3) bossBg = stage4Boss3;
+        if (this.stage4BossPhase === 4) bossBg = stage4Boss4;
+
         ctx.drawImage(bossBg, 0, 0, W, H);
         return;
       }
@@ -4804,6 +4802,8 @@ class Game {
       ctx.globalAlpha = clamp((f - 0.3) / 0.7, 0, 1);
       if (this.stageIndex === 1) {
         ctx.drawImage(stage2Boss1, 0, 0, W, H);
+      } else if (this.stageIndex === 3) {
+        ctx.drawImage(stage4Boss1, 0, 0, W, H);
       } else {
         this.sky(STAGES[this.stageIndex].theme);
         this.giantCity(STAGES[this.stageIndex].theme);
