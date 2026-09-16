@@ -76,6 +76,9 @@ stage6Boss3.src = "images/Stage6BossFightBackground3.png";
 const stage6Boss4 = new Image();
 stage6Boss4.src = "images/Stage6BossFightBackground4.png";
 
+const completionBackground = new Image();
+completionBackground.src = "images/CompletionBackground.png";
+
 
 
 let save = {
@@ -4687,26 +4690,7 @@ class Game {
     }
 
     if (this.state === "victory") {
-      let camera = this.camera;
-      this.camera = 0;
-      this.background("city", false);
-      this.camera = camera;
-
-      drawFighter(
-        ctx,
-        {
-          ranger: this.selected,
-          x: 115,
-          y: 650,
-          scale: 1.6,
-          dir: 1,
-          state: "victory",
-          inv: 0,
-          stun: 0,
-          attack: { elapsed: 0.02, duration: 1 },
-        },
-        this.clock,
-      );
+      ctx.drawImage(completionBackground, 0, 0, W, H);
       return;
     }
 
