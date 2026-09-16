@@ -58,6 +58,9 @@ stage4Boss3.src = "images/Stage4BossFightBackground3.png";
 const stage4Boss4 = new Image();
 stage4Boss4.src = "images/Stage4BossFightBackground4.png";
 
+const stage5Background = new Image();
+stage5Background.src = "images/Stage5Background.png";
+
 
 
 let save = {
@@ -4146,6 +4149,14 @@ class Game {
       let ratio = Math.max(0, Math.min(1, this.camera / maxCamera));
       let drawX = ratio * (stage4Background.naturalWidth - W);
       ctx.drawImage(stage4Background, Math.floor(drawX), 0, W, H, 0, 0, W, H);
+      return;
+    }
+
+    if (this.stageIndex === 4 && forceTheme === null && !giant) {
+      let maxCamera = 4 * 930;
+      let ratio = Math.max(0, Math.min(1, this.camera / maxCamera));
+      let drawX = ratio * (stage5Background.naturalWidth - W);
+      ctx.drawImage(stage5Background, Math.floor(drawX), 0, W, H, 0, 0, W, H);
       return;
     }
 
