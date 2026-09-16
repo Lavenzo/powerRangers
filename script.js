@@ -1,5 +1,7 @@
 "use strict";
 
+const RED_RANGER_BBOX = {"0":{"sx":52,"sy":61,"sw":392,"sh":195,"dx":52,"dy":61},"1":{"sx":491,"sy":61,"sw":447,"sh":195,"dx":22,"dy":61},"2":{"sx":938,"sy":61,"sw":396,"sh":195,"dx":0,"dy":61},"3":{"sx":1443,"sy":64,"sw":433,"sh":192,"dx":36,"dy":64},"4":{"sx":1876,"sy":83,"sw":469,"sh":173,"dx":0,"dy":83},"5":{"sx":2345,"sy":69,"sw":94,"sh":159,"dx":0,"dy":69},"6":{"sx":83,"sy":256,"sw":386,"sh":256,"dx":83,"dy":0},"7":{"sx":469,"sy":256,"sw":430,"sh":256,"dx":0,"dy":0},"8":{"sx":964,"sy":256,"sw":443,"sh":256,"dx":26,"dy":0},"9":{"sx":1407,"sy":256,"sw":469,"sh":256,"dx":0,"dy":0},"10":{"sx":1876,"sy":256,"sw":469,"sh":256,"dx":0,"dy":0},"11":{"sx":2345,"sy":393,"sw":92,"sh":119,"dx":0,"dy":137},"12":{"sx":51,"sy":512,"sw":418,"sh":245,"dx":51,"dy":0},"13":{"sx":469,"sy":512,"sw":445,"sh":245,"dx":0,"dy":0},"14":{"sx":960,"sy":512,"sw":447,"sh":239,"dx":22,"dy":0},"15":{"sx":1407,"sy":512,"sw":455,"sh":245,"dx":0,"dy":0},"16":{"sx":1907,"sy":512,"sw":438,"sh":256,"dx":31,"dy":0},"17":{"sx":2345,"sy":512,"sw":235,"sh":174,"dx":0,"dy":0},"18":{"sx":75,"sy":800,"sw":394,"sh":224,"dx":75,"dy":32},"19":{"sx":469,"sy":801,"sw":469,"sh":223,"dx":0,"dy":33},"20":{"sx":938,"sy":823,"sw":469,"sh":201,"dx":0,"dy":55},"21":{"sx":1407,"sy":814,"sw":469,"sh":210,"dx":0,"dy":46},"22":{"sx":1876,"sy":768,"sw":469,"sh":256,"dx":0,"dy":0},"23":{"sx":2345,"sy":829,"sw":332,"sh":195,"dx":0,"dy":61},"24":{"sx":49,"sy":1024,"sw":420,"sh":256,"dx":49,"dy":0},"25":{"sx":469,"sy":1024,"sw":469,"sh":256,"dx":0,"dy":0},"26":{"sx":938,"sy":1024,"sw":394,"sh":256,"dx":0,"dy":0},"27":{"sx":1502,"sy":1024,"sw":374,"sh":256,"dx":95,"dy":0},"28":{"sx":1876,"sy":1024,"sw":469,"sh":256,"dx":0,"dy":0},"29":{"sx":2345,"sy":1024,"sw":394,"sh":256,"dx":0,"dy":0},"30":{"sx":76,"sy":1280,"sw":393,"sh":237,"dx":76,"dy":0},"31":{"sx":469,"sy":1280,"sw":469,"sh":203,"dx":0,"dy":0}};
+
 const RED_RANGER_FRAMES = {
   idle: [0, 1, 2, 3],
   run: [6, 7, 8, 9, 10, 11],
@@ -986,19 +988,34 @@ function drawFighter(c, actor, time) {
       let t = Math.floor(time * 10) % runFrames.length;
       frame = runFrames[t];
     } else {
-      let idleFrames = RED_RANGER_FRAMES.idle;
-      let t = Math.floor(time * 4) % idleFrames.length;
-      frame = idleFrames[t];
+      // If it's a UI/menu element (no hp defined), lock it to frame 0
+      if (actor.hp === undefined) {
+        frame = RED_RANGER_FRAMES.idle[0];
+      } else {
+        let idleFrames = RED_RANGER_FRAMES.idle;
+        let t = Math.floor(time * 4) % idleFrames.length;
+        frame = idleFrames[t];
+      }
     }
 
-    let cellW = 469;
-    let cellH = 256;
-    let sx = (frame % 6) * cellW;
-    let sy = Math.floor(frame / 6) * cellH;
+    let box = RED_RANGER_BBOX[frame] || { sx: 0, sy: 0, sw: 469, sh: 256, dx: 0, dy: 0 };
 
-    // Explicit bottom-center anchor based on the provided 469x256 grid
-    // For large energy blasts/sword attacks, the visual center is maintained within the 469 width
-    c.drawImage(redRangerImg, sx, sy, cellW, cellH, -cellW / 2, -230, cellW, cellH);
+    // Scale factor to bring the original 256 height sprite down to the game's ~110px procedural scale
+    let drawScale = 0.43;
+
+    // We calculate the top-left destination coordinate as if we were drawing the full 469x256 cell,
+    // then add the cropped offset (dx, dy) multiplied by the scale.
+    let fullDrawW = 469 * drawScale;
+    let fullDrawH = 256 * drawScale;
+
+    // The origin destination point (top-left of the imaginary 469x256 cell)
+    let destX = -fullDrawW / 2 + (box.dx * drawScale);
+    let destY = -fullDrawH + 11 + (box.dy * drawScale);
+    let destW = box.sw * drawScale;
+    let destH = box.sh * drawScale;
+
+    // Draw only the exact cropped bounding box to avoid the baked-in checkerboard pixels
+    c.drawImage(redRangerImg, box.sx, box.sy, box.sw, box.sh, destX, destY, destW, destH);
 
     c.restore();
     return;
